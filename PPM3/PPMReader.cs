@@ -13,7 +13,7 @@
     {
         public static Bitmap ReadBitmapFromPPM(string file)
         {
-            string widths = "", heights = "";
+            string widths = "", heights = "", red = "", green = "", blue = "";
             char temp = '2';
             char number;
 
@@ -30,7 +30,7 @@
             }
                 
 
-            reader.ReadChar(); //Eat newline
+            reader.ReadChar();
 
             if (reader.ReadChar() == '#')
                 while (temp != '\n')
@@ -59,14 +59,23 @@
                             reader.ReadByte())
                             );
             }
-            else if(number == '3')
+            else if (number == '3')
             {
                 for (int y = 0; y < height; y++)
-                    for (int x = 0; x < width; x++)
-                        bitmap.SetPixel(x, y, Color.FromArgb(reader.ReadByte(),
-                            reader.ReadByte(),
-                            reader.ReadByte())
-                            );
+                    for (int x = 0; x < width; x++) {
+                        while ((temp = reader.ReadChar()) != ' ')
+                        {
+                            red += temp;
+                            green += reader.ReadChar();
+                            blue += reader.ReadChar();
+                        }
+                        bitmap.SetPixel(x, y, Color.FromArgb(int.Parse(red),
+                                    int.Parse(green),
+                                    int.Parse(blue)));
+                        red = "";
+                        green = "";
+                        blue = "";
+                    }
             }
 
             return bitmap;
