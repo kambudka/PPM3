@@ -15,10 +15,15 @@
         {
             string widths = "", heights = "";
             char temp = '2';
+            char number;
 
             var reader = new BinaryReader(new FileStream(file, FileMode.Open));
-            if (reader.ReadChar() != 'P' || reader.ReadChar() != '6')
+            if (reader.ReadChar() != 'P')
                 return null;
+            number = reader.ReadChar();
+            if(number != '6' || number != '3')
+                return null;
+
             reader.ReadChar(); //Eat newline
 
             if (reader.ReadChar() == '#')
@@ -36,12 +41,16 @@
                 height = int.Parse(heights);
             Bitmap bitmap = new Bitmap(width, height);
             //Read in the pixels
-            for (int y = 0; y < height; y++)
-                for (int x = 0; x < width; x++)
-                    bitmap.SetPixel(x, y, Color.FromArgb(reader.ReadByte(),
-                        reader.ReadByte(),
-                        reader.ReadByte())
-                        );
+            if (number == '6')
+            {
+                for (int y = 0; y < height; y++)
+                    for (int x = 0; x < width; x++)
+                        bitmap.SetPixel(x, y, Color.FromArgb(reader.ReadByte(),
+                            reader.ReadByte(),
+                            reader.ReadByte())
+                            );
+            }
+            else if(number == '3')
             return bitmap;
         }
 
