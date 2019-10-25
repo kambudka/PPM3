@@ -36,14 +36,33 @@
                 while (temp != '\n')
                     temp = reader.ReadChar();
 
-            while ((temp = reader.ReadChar()) != ' ')
-                widths += temp;
-            while ((temp = reader.ReadChar()) >= '0' && temp <= '9')
-                heights += temp;
-            if (reader.ReadChar() != '2' || reader.ReadChar() != '5' || reader.ReadChar() != '5')
-                return null;
+            temp = '2';
+            while (temp != '\n')
+            {
+                temp = reader.ReadChar();
 
-            reader.ReadChar();
+                if (widths == "")
+                    while (temp != ' ')
+                    {
+                    widths += temp;
+                    temp = reader.ReadChar();
+                    }
+                    
+                if(widths != "")
+                    while (temp != ' ')
+                    {
+                        heights += temp;
+                        temp = reader.ReadChar();
+                        if (temp == '\n')
+                            break;
+                    }
+            }
+            
+            while((temp = reader.ReadChar()) != '\n')
+            {
+                //if (reader.ReadChar() != '2' || reader.ReadChar() != '5' || reader.ReadChar() != '5')
+                //    return null;
+            }
 
             int width = int.Parse(widths),
                 height = int.Parse(heights);
@@ -63,18 +82,30 @@
             {
                 for (int y = 0; y < height; y++)
                     for (int x = 0; x < width; x++) {
-                        while ((temp = reader.ReadChar()) != ' ')
+                        do
                         {
-                            red += temp;
-                            green += reader.ReadChar();
-                            blue += reader.ReadChar();
-                        }
-                        bitmap.SetPixel(x, y, Color.FromArgb(int.Parse(red),
-                                    int.Parse(green),
-                                    int.Parse(blue)));
-                        red = "";
-                        green = "";
-                        blue = "";
+
+                            while ((temp = reader.ReadChar()) != ' ')
+                            {
+                                red += temp;
+                            }
+                            while ((temp = reader.ReadChar()) != ' ')
+                            {
+                                green += temp;
+                            }
+                            while ((temp = reader.ReadChar()) != ' ')
+                            {
+                                blue += temp;
+                            }
+
+                            bitmap.SetPixel(x, y, Color.FromArgb(int.Parse(red),
+                                            int.Parse(green),
+                                            int.Parse(blue)));
+
+                            red = "";
+                            green = "";
+                            blue = "";
+                        } while ((temp = reader.ReadChar()) != '\n');
                     }
             }
 
