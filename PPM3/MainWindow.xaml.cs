@@ -22,9 +22,12 @@
 
     public partial class MainWindow : Window
     {
+        private BitmapImage map;
+        System.Drawing.Bitmap bitmaptosave;
         public MainWindow()
         {
-            InitializeComponent(); ;
+            InitializeComponent();
+
         }
         private void btnLoad_Click(object sender, RoutedEventArgs e)
         {
@@ -40,28 +43,29 @@
                 if (ext == ".ppm")
                     ppmFile(op.FileName);
                 else
-                    Image.Source = new BitmapImage(new Uri(op.FileName));
+                {
+
+                    map = new BitmapImage(new Uri(op.FileName));
+                    Image.Source = map;
+                }
+                    
             }
 
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog op = new OpenFileDialog();
-            op.Title = "Select a picture";
-            op.Filter = "All supported graphics|*.jpg;*.jpeg;*.ppm;* |" +
-              "JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|" +
-              "Portable Network Graphic (*.png)|*.png";
-            if (op.ShowDialog() == true)
+            using(MemoryStream outStream = new MemoryStream())
             {
-                string ext = System.IO.Path.GetExtension(op.FileName);
-                if (ext == ".ppm")
-                    ppmFile(op.FileName);
-                else
-                    Image.Source = new BitmapImage(new Uri(op.FileName));
+                BitmapEncoder enc = new BmpBitmapEncoder();
+                enc.Frames.Add(BitmapFrame.Create(map));
+                enc.Save(outStream);
+                bitmaptosave = new System.Drawing.Bitmap(outStream);   
             }
-
+            JPEGCoder.SaveImage(map, Box.SelectedIndex);
+            MessageBox.Show("File Saved");
         }
+
 
         private void ppmFile(string fileName)
         {
@@ -84,6 +88,7 @@
             }
 
             Image.Source = input;
+            map = input;
         }
     }
 }
